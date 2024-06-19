@@ -1,0 +1,83 @@
+---
+title: Add a Bookmark Group
+layout: layouts/modern/base-app.njk
+permalink: /bookmark/add/
+---
+<div class="outer bookmark">
+    {% include "../_includes/layouts/modern/parts/header-dynamic.njk" %}
+
+    <div class="atPage">
+        <div class="bmWelcomeBlock">
+            <div class="left">
+                <div class="bmTitle" id="bookmarkTitle">
+                    <input type="text" value="" placeholder="Untitled group..." id="bmTitleField">
+                    <p>Group names cannot contain these symbols: $;,./\<>{}()</p>
+                </div>
+            </div>
+            <div class="right hideOnMobile">
+                <div class="bmNavMenu">
+                    <a class="bmNavLink" id="triggerSave" href="#" onclick="createAthenaeum()">Save and Create</a>
+                </div>
+            </div>
+        </div>
+        <div class="atDbForm" id="dbForm">
+            <div class="form" id="newAthenaeum">
+                <!--
+                <div class="field title">
+                    <input class="recordText" type="text" placeholder="Title..." required>
+                </div>
+                -->
+                <div class="field link visibility">
+                    <input class="recordText" type="text" placeholder="Enter 'public' or 'private'" value="public" disabled>
+                </div>
+                <div class="field link icon">
+                    <input class="recordText" type="text" placeholder="Link to icon..." required>
+                </div>
+                <div class="fieldControls">
+                    &nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include "../_includes/layouts/modern/parts/footer.njk" %}
+</div>
+<script>
+    async function createAthenaeum () {
+        const record = document.getElementById('newAthenaeum');
+
+        const title = document.getElementById('bmTitleField').value;
+        const access = record.querySelector('.link.visibility input').value;
+        const icon = record.querySelector('.link.icon input').value;
+
+        // Get NWTB UUID from local storage
+        const nwtbUUID = localStorage.getItem('nwtbUUID');
+
+        // If any field is empty, return
+        if (!title || !access || !icon) {
+            alert('Please fill out all fields.');
+            return;
+        }
+        
+        const response = await fetch("/.netlify/functions/athenaeum-create", {
+            method: 'POST',
+            body: JSON.stringify({
+                nwtbUUID: nwtbUUID,
+                access: access,
+                title: title,
+                iconLink: icon,
+                type: 'bookmark'
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            // Redirect to the new Athenaeum
+            window.location.href = `/bookmark/${data.atID}`;
+        }
+    }
+
+    function easterEgg () {
+        alert('Go to one of your Bookmark groups to use this feature.');
+    }
+</script>

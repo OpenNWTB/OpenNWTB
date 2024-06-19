@@ -1,0 +1,1069 @@
+/* 
+ * NWTB Standard Theme
+ * Created by Nathan Dick.
+ * Copyright (C) 2020-2024 Nathan Dick. All Rights Reserved.
+ */
+
+/*
+ *
+ * FONTS
+ *
+*/
+
+@font-face {
+    font-family: 'Protest Riot';
+    src: url('/public/font/ProtestRiot.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Diamond Grotesk';
+    src: url('/public/font/DiamondGrotesk.woff2') format('woff2');
+}
+
+
+
+/*
+ *
+ * CSS Variables
+ * These are used throughout the document to simplify changes.
+ * Note that text and border colours apply to numerous different elements. 
+ * Pick colours carefully to ensure content is viewable.
+ *
+*/
+
+:root {
+    /* Default background colours */
+    /* Note: This will not be seen on the <body> background when a background image is in use. */
+    --background: #FFFFFF;
+    
+    /* Main text and element colours */
+    --color-primary: #0a0908;
+    --color-secondary: white;
+    --color-tertiary: rgb(255 255 255 / 0.65);
+
+    /* Shadows */
+    --small-box-shadow: 5px 5px 30px 10px rgb(255 255 255 / 0.65);
+    --large-box-shadow: 10px 10px 30px 10px rgb(255 255 255 / 0.65);
+
+    /* Fonts */
+    --site-title: "Protest Riot";
+    --headers: "Protest Riot";
+    --general-text: "Diamond Grotesk";
+    --monospaced-text: "Diamond Grotesk"; 
+    --handwriting: "Diamond Grotesk";
+    --numbers: "Diamond Grotesk";
+}
+/*
+*
+* Global
+*
+*/
+html {
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    /*background: linear-gradient(135deg, #000000, #03045E, #022E8A, #0077B6, #0096C7, #00B4D8, #48CAE4, #90E0EF, #ADE8F4, #CAF0F8);*/
+    /*background-size: 400% 400%;
+    animation: gradient 22s ease infinite;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.purple {
+    background-color: #3d0042;
+}
+
+.red {
+    background-color: #4c0519;
+}
+
+.blue {
+    background-color: #001f54;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    25% {
+        background-position: 50% 100%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    75% {
+        background-position: 50% 0%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+div, span, buttonWrap p {
+    display: flex;
+}
+
+
+/*
+ *
+ * Blocks
+ *
+*/
+
+.outerContentWrap {
+    min-width: 80%;
+    max-width: 92%;
+    height: max-content;
+    max-height: 90%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    flex-direction: column;
+    border-radius: 20px;
+    box-shadow: 0px 0px 50px -2px rgb(0 0 0 / 0.65);
+    transition: 0.8s;
+    -webkit-transition: 0.8s;
+    /*background-color: rgb(0 0 0 / 0.65);*/
+}
+
+.outerContentWrap::-webkit-scrollbar {
+    display: none;
+}
+
+.siteHeader {
+    background-color: rgb(255 255 255 / 0.65);
+    width: 100%;
+    height: max-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.blackSiteHeader {
+    /*background-color: rgb(0 0 0 / 0.95);*/
+    width: 100%;
+    height: max-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.headerLeft {
+    width: 30%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.headerRight {
+    width: 70%;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.logoLarge {
+    margin: 30px;
+}
+
+.logo {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    flex-wrap: nowrap;
+    margin-right: 25px;
+}
+
+.nwtbLogo {
+    height: 75px;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.nwtbLogo img {
+    border-bottom-right-radius: 20px;
+}
+
+.subAppLogo {
+    width: max-content;
+    align-items: center;
+    color: white !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.subAppText {
+    font-family: var(--headers);
+    font-size: 1.75rem;
+    color: white;
+    margin-left: 20px;
+}
+
+.pageContent {
+    height: max-content;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.folio {
+    min-width: 60%;
+}
+
+.hideByDefault {
+    display: none !important;
+}
+
+.hideOnDesktop {
+    display: none !important;
+}
+
+.pageContent .form {
+    width: 50vw;
+}
+
+footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    /* border-top: 1px solid #f6b1ff; */
+    /* background-color: #f6b1ff; */
+    margin-top: 30px;
+}
+
+.systemLogo {
+    width: max-content;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    color: white;
+}
+
+.right {
+    width: 50%;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    color: white;
+    margin-right: 20px;
+}
+
+.left a, .right a {
+    color: white;
+    text-decoration: none;
+}
+
+.left a:hover, .right a:hover {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/*
+ *
+ * Account History
+ *
+*/
+
+.menuSection {
+    width: 100%;
+    flex-direction: column;
+    height: max-content;
+    text-align: center;
+    align-items: center;
+}
+
+.menuSection .flexStart {
+    justify-content: flex-start;
+}
+
+.menuSection .spaceAround {
+    justify-content: space-around;
+}
+
+.userDetailBar {
+    width: 100%;
+    height: max-content;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 50px;
+}
+
+.userMenuBar {
+    width: 95%;
+    height: max-content;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+    justify-content: flex-start;
+}
+
+.userDetailBar span, .userMenuBar .menuItem {
+    text-decoration: none;
+    transition: 0.4s;
+    padding: 8px;
+    border-radius: 4px;
+    transition: 0.4s;
+    border: 1px solid transparent;
+}
+
+.userMenuBar .menuHeading {
+    border: 1px solid white;
+    background-color: white;
+    padding: 8px;
+    border-radius: 4px;
+    color: black;
+}
+
+.userMenuBar .menuItem:hover {
+    border-color: #f6b1ff;
+    transition: 0.4s;
+}
+
+.userMenuBar .menuItem a {
+    color: rgb(255 255 255 / 0.6);
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.userDetailbar .menuItem:hover a {
+    color: #f6b1ff;
+}
+
+.accountHistoryHeader {
+    width: 100%;
+    height: max-content;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    /*background-color: rgb(0 0 0 / 0.8);*/
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: white;
+    margin-bottom: 30px;
+}
+
+.accountBalanceWrap {
+    width: 100%;
+    height: max-content;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.accountBalanceWrap .innerLeft {
+    width: 50%;
+    height: max-content;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-left: 25px;
+}
+
+.accountBalanceWrap .innerRight {
+    width: 50%;
+    height: max-content;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    font-size: 3rem;
+    margin-right: 25px;
+
+}
+
+.invoiceStateWrap, .fishPayStatusWrap {
+    min-height: 65px;
+    height: max-content;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.noticeSuccessWrap {
+    width: 90%;
+    max-width: 1000px;
+    height: max-content;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgb(125 223 100 / 0.4);
+    color: white;
+    border-top: 1px solid #7DDF64;
+    border-bottom: 1px solid #7DDF64;
+    border-right: 1px solid #7DDF64;
+    border-left: 20px solid #7DDF64;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.noticeHighlightWrap {
+    width: 90%;
+    max-width: 1000px;
+    height: max-content;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgb(255 183 3 / 0.4);
+    color: black;
+    border-top: 1px solid #ffb703;
+    border-bottom: 1px solid #ffb703;
+    border-right: 1px solid #ffb703;
+    border-left: 20px solid #ffb703;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.noticeAlertWrap {
+    width: 90%;
+    max-width: 1000px;
+    height: max-content;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgb(254 74 73 / 0.4);
+    color: white;
+    border-top: 1px solid #FE4A49;
+    border-bottom: 1px solid #FE4A49;
+    border-right: 1px solid #FE4A49;
+    border-left: 20px solid #FE4A49;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.accountNumberWrap {
+    width: 90%;
+    max-width: 1000px;
+    height: 50px;
+    max-width: 1000px;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgb(0 0 0 / 0.65);
+    color: white;
+    border: 2px solid rgb(0 0 0 / 0.65);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.accountHistoryList {
+    width: 90%;
+    max-width: 1000px;
+    height: max-content;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    row-gap: 10px;
+    margin-bottom: 30px;
+}
+
+.accountHistoryList .header {
+    width: 100%;
+    height: 60px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    background-color: white;
+    color: #001f54;
+    box-shadow: rgb(0 0 0 / 0.65) 1px 3px 2px;
+    font-family: var(--handwriting);
+    font-size: 1.25rem;
+}
+
+.accountHistoryList .header span {
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.accountHistoryList .lineItem {
+    width: 100%;
+    height: max-content;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    font-family: var(--monospaced-text);
+    color: white;
+}
+
+.date {
+    width: 13%;
+    align-content: center;
+    justify-content: center;
+}
+
+.lineItem .date {
+    font-size: 0.8rem;
+}
+
+.description {
+    width: 72%;
+}
+
+.lineItem .description {
+    font-size: 1.5rem;
+    font-family: var(--monospaced-text);
+    line-height: 1.75em;
+}
+
+.amount {
+    width: 15%;
+    align-content: center;
+    justify-content: center;
+}
+
+.lineItem .amount {
+    font-size: 1.15rem;
+}
+
+.transactionMessage {
+    width: 100%;
+    justify-content: left;
+    text-align: left;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 0.9rem;
+}
+
+/*
+ *
+ * Forms
+ *
+*/
+
+.formWrap, form {
+    width: 100%;
+    height: max-content;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    color: white;
+}
+
+.text {
+    width: 75%;
+    height: 50px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-family: var(--general-text);
+    background-color: transparent;
+    padding: 0 10px;
+    margin: 10px 0;
+    text-align: center;
+    border: none;
+    border-bottom: 3px solid white;
+    color: white;
+}
+
+::placeholder {
+    color: #F6F6F6;
+} 
+
+.select {
+    width: 75%;
+    height: 50px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-family: var(--general-text);
+    border-radius: 10px;
+    background-color: transparent;
+    padding: 0 10px;
+    margin: 10px 0;
+    color: white;
+    border: 2px solid white;
+    text-align: center;
+}
+
+.responseMessageWrap {
+    width: 75%;
+    height: 100px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-family: var(--general-text);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: 5px;
+    padding: 0 10px;
+    margin: 10px 0;
+    background-color: transparent;
+}
+
+.responseMessageWrap .message {
+    color: white;
+}
+
+/*
+ *
+ * Buttons & Links
+ *
+*/
+
+.inlineLink {
+    color: inherit;
+    font-family: var(--general-text);
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.inlineLinkNoUnderline {
+    color: inherit;
+    font-family: var(--general-text);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/*
+ *
+ * Typography
+ *
+*/
+
+.siteTitle { /* h1 */
+    text-align: left;
+    margin-left: 20px;
+}
+
+.siteLogo { /* h1 span */
+    font-family: var(--site-title);
+    font-style: normal !important;
+    font-size: larger;
+    text-align: left;
+    margin-bottom: 0px;
+}
+
+h2 {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 0;
+    font-family: var(--headers);
+    text-align: center;
+}
+
+.adminPageTitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--general-text);
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.adminTitle {
+    font-size: 1rem;
+    justify-content: center;
+    height: max-content;
+    align-items: center;
+    background-color: rgb(0 0 0 / 1);
+    border-radius: 10px;
+    padding: 8px;
+}
+
+.pageTitle {
+    margin-left: 20px;
+}
+
+h3, h4, h5, h6 {
+    font-family: var(--headers);
+}
+
+.footerText {
+    margin: 5px;
+    font-family: var(--monospaced-text);
+}
+
+.accountBalanceWrap .message, .invoiceStateWrap .message, .accountNumberWrap .message {
+    font-family: var(--general-text);
+}
+
+.accountBalanceWrap .number, .invoiceStateWrap .number, .accountNumberWrap .number, .folioNumber {
+    font-family: var(--numbers);
+}
+
+.message, .folioText {
+    font-family: var(--general-text);
+}
+
+.pageContent p {
+    font-family: var(--general-text);
+    text-align: center;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    height: max-content;
+    align-items: center;
+    width: 90%;
+    flex-wrap: wrap;
+    column-gap: 30px;
+    row-gap: 10px;
+}
+
+.xsmall {
+    font-size: 0.8rem;
+}
+
+.small {
+    font-size: 1.0rem;
+}
+
+.normal, .medium, .transaction .header, .transaction .lineItem {
+    font-size: 1.2rem;
+}
+
+.large {
+    font-size: 1.4rem;
+}
+
+.xlarge {
+    font-size: 1.6rem;
+}
+
+.xxlarge {
+    font-size: 2.0rem;
+}
+
+.invoiceBlue {
+    border: 3px solid #00a8e8 !important;
+}
+
+.green {
+    border: 3px solid #38b000 !important;
+}
+
+.white {
+    color: white;
+}
+
+.light {
+    color: rgb(230 230 230 / 0.6);
+}
+
+.handwriting {
+    font-family: var(--handwriting) !important;
+}
+
+.mono {
+    font-family: var(--monospaced-text) !important;
+}
+
+.heading {
+    font-family: var(--handwriting) !important;
+}
+
+.balance {
+    font-family: var(--numbers);
+}
+
+.button {
+    font-family: var(--general-text);
+    text-decoration: none;
+    padding: 8px;
+    border: 1px solid;
+    border-radius: 4px;
+    font-size: 1.25rem;
+    display: flex;
+    flex-direction: row;
+    transition: 0.6s;
+    -webkit-transition: 0.6s;
+    background-color: transparent;
+    justify-content: center;
+    min-width: 150px;
+    margin: 4px;
+}
+.purple .button {
+    border-color: #f6b1ff;
+    color: #f6b1ff;
+}
+
+.blue .button {
+    border-color: #b1e1ff;
+    color: #b1e1ff;
+}
+
+.red .button {
+    border-color: #fda4b0;
+    color: #fda4b0;
+}
+
+.button:hover {
+    padding: 12px;
+    transition: 0.6s;
+    -webkit-transition: 0.6s;
+    margin: 0px;
+    border-radius: 10px;
+}
+
+.purple .button:hover {
+    background-color: #F6B1FF;
+    border-color: #71007b;
+    color: #71007b;
+}
+
+.blue .button:hover {
+    background-color: #b1e1ff;
+    border-color: #001f54;
+    color: #001f54;
+}
+
+.red .button:hover {
+    background-color: #fda4b0;
+    border-color: #4c0519;
+    color: #4c0519;
+}
+
+
+
+
+@media only screen and (max-width: 600px) {
+
+    body {
+        justify-content: flex-start;
+    }
+
+    .accountHistory {
+        padding-left: unset;
+        padding-right: unset;
+    }
+
+    .menuSection {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        width: 95%;
+        flex-wrap: wrap;
+    }
+
+    .userMenuBar {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+        margin-bottom: 25px;
+    }
+
+    .pageContent {
+        height: max-content;
+    }
+
+    .coreItem {
+        width: 85%;
+    }
+
+    .noticeWrap {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        border: none;
+        margin: unset;
+        border-radius: unset;
+        border-top: 10px solid #FFB703;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        text-align: center;
+    }
+
+    .subAppText {
+        display: none;
+    }
+    
+    .nwtbLogo {
+        height: 75px;
+    }
+
+    .userDetailBar .medium {
+        padding: unset;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .hubButton:hover {
+        font-size: 6rem;
+    }
+
+    .headerRight .iconButton {
+        width: 175px;
+    }
+
+    .headerRight .iconButton .iconButtonEmoji {
+        font-size: 2rem;
+    }
+
+    .headerRight .iconButton .iconButtonTitle {
+        font-size: 1rem;
+    }
+
+    .outerContentWrap {
+        width: 100%;
+        max-width: unset;
+        height: max-content;
+        max-height: unset;
+        margin: 0;
+        border-radius: unset;
+        backdrop-filter: unset;
+        -webkit-backdrop-filter: unset;
+    }
+
+    .transparentOuterContentWrap {
+        opacity: 1;
+        transition: unset;
+    }
+
+    .transparentOuterContentWrap:hover {
+        transition: unset;
+    }
+
+    .accountBalanceWrap .innerLeft {
+        margin-left: 20px;
+    }
+
+    .accountBalanceWrap .innerRight {
+        margin-right: 20px;
+    }
+    
+    .info {
+        display: none;
+    }
+
+    .siteTitle {
+        font-size: 2.5rem;
+        margin-left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    .homeLogo, .fishLogo {
+        display: none;
+    }
+    
+    .siteLogo {
+        font-size: 2.7rem;
+        margin-left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .navButton {
+        font-size: 2rem;
+    }
+
+    .medium, .large {
+        font-size: 1.0rem;
+        font-weight: bold;
+    }
+
+    .noticeWrap .large {
+        text-decoration: double underline;
+    }
+
+    .noticeWrap .small {
+        margin: 10px;
+        font-size: 0.9rem;
+    }
+
+    .date {
+        width: 30%;
+        font-size: 0.8rem;
+    }
+
+    .description {
+        width: 50%;
+        font-size: 0.8rem !important;
+    }
+
+    .transactionMessage {
+        font-size: 0.65rem !important;
+        margin-bottom: 5px;
+    }
+
+    .amount {
+        width: 20%;
+        font-size: 0.8rem !important;
+    }
+
+    .transaction .header {
+        font-size: 0.8rem;
+    }
+
+    .transaction .lineItem {
+        font-size: 0.8rem;
+    }
+
+    .accountHolderWrap, .accountHistoryHeader {
+        border-radius: unset;
+        border: unset;
+        width: 100%;
+    }
+
+    .accountHistoryList {
+        width: 100%;
+    }
+
+    .lineItem {
+        padding: unset;
+    }
+
+    .hideOnMobile {
+        display: none !important;
+    }
+
+    .hideOnDesktop {
+        display: unset !important;
+    }
+
+    .text {
+        width: 90%;
+    }
+
+    .select {
+        width: 95%;
+    }
+}

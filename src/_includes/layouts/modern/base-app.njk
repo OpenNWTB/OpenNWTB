@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="NWTB. Private cloud, by N8." />
+        <link rel="stylesheet" type="text/css" href="/public/themes/v15/modern-default-palette.css" />
+        <link rel="stylesheet" type="text/css" href="/public/themes/v15/modern.css" />
+        {% seo "" %}
+        <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+        <meta name="theme-color" content="#3d0042" />
+    </head>
+    <body class="orange">
+        {{ content | safe }}
+        <script src="/public/scripts/auth-module.js" type="module"></script>
+        <script src="/public/scripts/auth-main.js" type="module"></script>
+    </body>
+</html>

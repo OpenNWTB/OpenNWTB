@@ -1,0 +1,54 @@
+---
+title: Create an Athenaeum
+layout: layouts/modern/base-app.njk
+permalink: /athenaeum/create/
+---
+<div class="outer athenaeum">
+    {% include "../_includes/layouts/modern/parts/header-dynamic.njk" %}
+
+    <div class="atPage">
+        <div class="atDbForm" id="dbForm">
+            <div class="form" id="newAthenaeum">
+                <div class="field title">
+                    <input class="recordText" type="text" placeholder="Title...">
+                </div>
+                <div class="field link">
+                    <input class="recordText" type="text" placeholder="Enter 'public' or 'private'" value="public">
+                </div>
+                <div class="fieldControls">
+                    <button class="triggerSave" id="triggerSave" onclick="createAthenaeum();"><img src="/public/icons/save.png" height="35px"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include "../_includes/layouts/modern/parts/footer.njk" %}
+</div>
+<script>
+    async function createAthenaeum () {
+        const record = document.getElementById('newAthenaeum');
+
+        const title = record.querySelector('.title input').value;
+        const access = record.querySelector('.link input').value;
+
+        // Get NWTB UUID from local storage
+        const nwtbUUID = localStorage.getItem('nwtbUUID');
+        
+        const response = await fetch("/.netlify/functions/athenaeum-create", {
+            method: 'POST',
+            body: JSON.stringify({
+                nwtbUUID: nwtbUUID,
+                access: access,
+                title: title
+                iconLink: null,
+                type: 'athenaeum'
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            // Redirect to the new Athenaeum
+            window.location.href = `/athenaeum/${data.atID}`;
+        }
+    }   
+</script>

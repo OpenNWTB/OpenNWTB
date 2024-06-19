@@ -1,0 +1,314 @@
+---
+title: Bookmark
+layout: layouts/modern/base-app.njk
+permalink: /bookmark/
+---
+
+<div class="outer bookmark">
+    {% include "../_includes/layouts/modern/parts/header-dynamic.njk" %}
+    {% include "../_includes/layouts/modern/loading/loading-app.njk" %}
+    <div class="atPage" style="display: none;" id="page">
+        <div class="bmWelcomeBlock">
+            <div class="left">
+                <div class="bmTitle" id="bookmarkTitle">
+                    <h2 id="bmTitleText"></h2>
+                    <input type="text" id="bmTitleInput" style="display: none;" value="">
+                    <p><span id="atID"></span></p>
+                </div>
+            </div>
+            <div class="right hideOnMobile">
+                <div class="bmNavMenu" id="bmNavMenu">
+                    <a id="editTitleButton" class="bmNavLink hideWhileEditing" href="#" onclick="editTitle();" style="display: none;">Edit Title</a>
+                    <a id="saveTitleButton" class="bmNavLink hideWhileViewing" href="#" onclick="saveTitle();" style="display: none;">Save Title</a>
+                    <a class="bmNavLink" href="/bookmark/add/">New Group</a>
+                    <!-- v14.1 -->
+                    <a class="bmNavLink" href="#" onclick="shareGroup();" style="display: none;">Share Group</a>
+                    <a class="bmNavLink" href="#" onclick="deleteGroup();" style="display: none;">Delete Group</a>
+                    <!-- v14.1-->
+                </div>
+            </div>
+        </div>
+        <div class="atDbForm hideOnMobile" id="dbForm">
+            <div class="form" id="newRecord">
+                <div class="field title">
+                    <input class="recordText" type="text" placeholder="Title...">
+                </div>
+                <div class="field category">
+                    <input class="recordText" type="text" placeholder="Category...">
+                </div>
+                <div class="field link">
+                    <input class="recordText" type="text" placeholder="Link...">
+                </div>
+                <div class="fieldControls">
+                    <button class="triggerSave" id="triggerSave" onclick="saveRecord()"><img src="/public/icons/save.png" height="35px"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="atDbRecords" id="dbRecords">
+            <!-- [...] -->
+        </div>
+    </div>
+
+    {% include "../_includes/layouts/modern/parts/footer.njk" %}
+</div>
+<script>
+    // When the page loads, fetch the database records
+    async function getAthenaea () {
+        // Get the user ID from localStorage (nwtbUUID)
+        const nwtbUUID = localStorage.getItem('nwtbUUID');
+        console.log("nwtbUUID: ", nwtbUUID);
+
+        // Get the current url
+        const url = window.location.href;
+        console.log("url: ", url);
+        
+        // Get the Athenaeum ID from the url (in format: https://nwtb.io/bookmark/[ATHENAEUM ID])
+        var athenaeumID = url.split('/').pop();
+
+        // If the last character of the athenaeumID is a '#', remove it
+        if (athenaeumID.charAt(athenaeumID.length - 1) === '#') {
+            athenaeumID = athenaeumID.slice(0, -1);
+        }
+
+        // If the athenaeum ID is not present, return to the homepage
+        if (!athenaeumID) {
+            window.location.href = '/';
+        }
+        console.log("athenaeumID: ", athenaeumID);
+        
+        // Fetch the Athenaeum records
+        const response = await fetch("/.netlify/functions/athenaeum-getdata", {
+            method: 'POST',
+            body: JSON.stringify({
+                nwtbUUID: nwtbUUID,
+                athenaeumID: athenaeumID
+            })
+        })
+
+        if (response.status === 403) {
+            alert('You do not have permission to view this Bookmark group.');
+        }
+
+        if (response.ok) {
+            // Get the response body
+            const data = await response.json();
+            const loading = document.getElementById('loading');
+            const page = document.getElementById('page');
+            console.log("data: ", data);
+
+            // Set the title of the Bookmark
+            document.getElementById('bmTitleText').textContent = data.atTitle;
+            document.getElementById('bmTitleInput').value = data.atTitle;
+
+            // Set the ID of the Bookmark Group
+            document.getElementById('atID').textContent = data.atID;
+
+            // Append athenaeumID to the dbRecords class list
+            document.getElementById('dbRecords').classList.add(data.atID);
+
+            // Clear the form fields
+            document.getElementById('newRecord').querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+
+            // Sort the records by category A-Z, then by title A-Z
+            data.athenaeumData.sort((a, b) => {
+                if (a.recordCategory[0] < b.recordCategory[0]) {
+                    return -1;
+                }
+                if (a.recordCategory[0] > b.recordCategory[0]) {
+                    return 1;
+                }
+                if (a.recordTitle < b.recordTitle) {
+                    return -1;
+                }
+                if (a.recordTitle > b.recordTitle) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            // For each record in the response body, create a new record element
+            data.athenaeumData.forEach(record => {
+                const recordElement = document.createElement('div');
+                // If this is the first record in the category, add a category header
+                if (record.recordCategory[0] !== data.athenaeumData[data.athenaeumData.indexOf(record) - 1]?.recordCategory[0]) {
+                    const categoryHeader = document.createElement('div');
+                    categoryHeader.classList.add('categoryHeader');
+                    categoryHeader.textContent = record.recordCategory[0];
+                    document.getElementById('dbRecords').appendChild(categoryHeader);
+                }
+                recordElement.classList.add('record');
+                // Set the id to the recordID
+                recordElement.id = record.recordID;
+                // Create element for the record title
+                const title = document.createElement('div');
+                title.classList.add('field');
+                title.classList.add('title');
+                // Open the record link onclick (using window.location.href)
+                title.innerHTML = `
+                    <span onclick="window.location.href = '${record.recordLinkToData}';"><p class="recordTitle hideWhileEditing">${record.recordTitle}</p></span>
+                    <input class="recordText hideWhileViewing" type="text" value="${record.recordTitle}">
+                `;
+                recordElement.appendChild(title);
+                // Create element for the record categories
+                const categories = document.createElement('div');
+                categories.classList.add('field');
+                categories.classList.add('category');
+                categories.classList.add('hideOnMobile');
+                // Iterate through JSON for each category (in the array record.recordCategory)
+                record.recordCategory.forEach(category => {
+                    const categoryItem = document.createElement('p');
+                    categoryItem.classList.add('recordCategoryItem');
+                    categoryItem.classList.add('hideWhileEditing');
+                    categoryItem.textContent = category;
+                    categories.appendChild(categoryItem);
+                });
+                // Create input for categories
+                const categoryInput = document.createElement('input');
+                categoryInput.classList.add('recordText');
+                categoryInput.classList.add('hideWhileViewing');
+                categoryInput.type = 'text';
+                categoryInput.value = record.recordCategory.join(', ');
+                categories.appendChild(categoryInput);
+                recordElement.appendChild(categories);
+
+                // Create element for the record controls
+                const controls = document.createElement('div');
+                controls.classList.add('fieldControls');
+                
+                // Create the controls
+                const save = document.createElement('button');
+                save.classList.add('triggerSave');
+                save.classList.add('hideWhileViewing');
+                save.id = 'triggerSave';
+                save.onclick = () => {
+                    saveRecord(record.recordID);
+                }
+                save.innerHTML = `<img src="/public/icons/save.png" height="35px">`;
+                controls.appendChild(save);
+
+                const edit = document.createElement('button');
+                edit.classList.add('triggerEdit');
+                edit.classList.add('hideWhileEditing');
+                edit.id = 'triggerEdit';
+                edit.onclick = () => {
+                    editRecord(record.recordID);
+                }
+                edit.innerHTML = `<img src="/public/icons/pencil.png" height="35px">`;
+                controls.appendChild(edit);
+
+                const del = document.createElement('button');
+                del.classList.add('triggerDelete');
+                del.id = 'triggerDelete';
+                del.onclick = () => {
+                    deleteRecord(record.recordID);
+                }
+                del.innerHTML = `<img src="/public/icons/trashcan.png" height="35px">`;
+                controls.appendChild(del);
+
+                recordElement.appendChild(controls);
+
+                // Append the record to the dbRecords element
+                document.getElementById('dbRecords').appendChild(recordElement);
+            });
+            // Hide loading, Show the page
+            loading.style.display = 'none';
+            page.style.display = 'flex';
+        }
+    }
+    getAthenaea();
+
+    async function saveRecord (recordID) {
+        var id = recordID;
+        var record;
+        var link;
+        if (id) {
+            record = document.getElementById(recordID);
+        } else {
+            record = document.getElementById('newRecord');
+            id = null
+            link = record.querySelector('.link input').value;
+        }
+        const title = record.querySelector('.title input').value;
+        const categories = record.querySelector('.category input').value.split(', ');
+        
+        const response = await fetch("/.netlify/functions/athenaeum-save", {
+            method: 'POST',
+            body: JSON.stringify({
+                athenaeumID: document.getElementById('dbRecords').classList[1],
+                recordID: id,
+                recordTitle: title,
+                recordCategory: categories,
+                recordTags: [],
+                recordLinkToData: link
+            })
+        });
+        // Clear the dbRecords element
+        document.getElementById('dbRecords').innerHTML = '';
+        // Fetch the records again
+        getAthenaea();
+    }
+
+    /* v14.1
+    async function saveTitle() {
+        // ...
+    }
+    */
+
+    async function editRecord (recordID) {
+        const record = document.getElementById(recordID);
+        record.querySelectorAll('.hideWhileEditing').forEach(element => {
+            element.style.display = 'none';
+        });
+        record.querySelectorAll('.hideWhileViewing').forEach(element => {
+            element.style.display = 'flex';
+        });
+    }
+
+    /* v14.1
+    async function editTitle () {
+        document.getElementById('bmTitleText').style.display = 'none';
+        document.getElementById('bmTitleInput').style.display = 'flex';
+        document.getElementById('editTitleButton').style.display = 'none';
+        document.getElementById('saveTitleButton').style.display = 'flex';
+    }
+    */
+
+    async function deleteRecord (recordID) {
+        // Prompt the user to confirm deletion
+        if (!confirm("Are you sure you want to delete this record?")) {
+            return;
+        }
+        // Fetch the delete function
+        const response = await fetch("/.netlify/functions/athenaeum-delete", {
+            method: 'POST',
+            body: JSON.stringify({
+                recordID: recordID,
+                athenaeumID: document.getElementById('dbRecords').classList[1]
+            })
+        });
+        if (response.ok) {
+            console.log("Record deleted successfully.");
+            // Delete the element from the DOM
+            document.getElementById(recordID).remove();
+        }
+    }
+
+    function easterEgg () {
+        // Get the loading and content elements, ASMR text element
+        const loading = document.getElementById('loading');
+        const content = document.getElementById('page');
+        const asmr = document.getElementById('asmr');
+
+        // Hide content, show loading
+        content.style.display = 'none';
+        loading.style.display = 'flex';
+        // Change ASMR text to "Refresh to disable."
+        asmr.innerText = 'Refresh to disable.';
+    }
+
+</script>
+
+

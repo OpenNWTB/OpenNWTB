@@ -1,0 +1,38 @@
+---
+title: My Account
+layout: layouts/modern/base-account.njk
+permalink: /index.html
+---
+
+<div class="outer account">
+    {% include "../_includes/layouts/modern/parts/header-dynamic-nolink.njk" %}
+    {% include "../_includes/layouts/modern/loading/loading-app.njk" %}
+    <div class="atPage" style="display: none;" id="page">
+        <div class="acWelcomeBlock">
+            <h2 id="userFullName"></h2>
+            <div class="acGeneralNav" id="acGeneralNav">
+                <span class="buttonLink iconLink" id="acBmAdd" onclick="window.location.href='/bookmark/add/';">
+                    <img src="/public/icons/bookmark.png" height="60px" alt="Bookmark new group icon">
+                </span>
+                <span class="buttonLink iconLink" onclick="window.location.href='/logout/';">
+                    <img src="/public/icons/signout.png" height="60px" alt="Sign Out Icon">
+                </span>
+            </div>
+        </div>
+        <div class="acGeneralNav" id="acAthenaeumNav">
+            <h3>
+                <span>Athenaeum</span>
+                <span onclick="window.location.href='/athenaeum/create/';"><img src="/public/icons/add.png" height="22px" alt="Add Icon"></span>
+            </h3>
+            <!--
+            <span class="buttonLink" onclick="window.location.href='/athenaeum/create';">
+                <a href="/athenaeum/[atID]" id="acAthenaeumAccountLink">Athenaeum Title</a>
+                ...OTHER ATHENAEA LINKS...
+            </span>
+            -->
+        </div>
+    </div>
+    {% include "../_includes/layouts/modern/parts/footer.njk" %}
+</div>
+<script src="/public/scripts/auth-module.js" type="module"></script>
+<script src="/public/scripts/auth-account.js" type="module"></script>

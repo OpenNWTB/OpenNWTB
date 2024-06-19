@@ -1,0 +1,294 @@
+---
+title: Athenaeum
+layout: layouts/modern/base-app.njk
+permalink: /athenaeum/
+---
+<div class="outer athenaeum">
+    {% include "../_includes/layouts/modern/parts/header-dynamic.njk" %}
+    {% include "../_includes/layouts/modern/loading/loading-app.njk" %}
+    <div class="atPage" style="display: none;" id="page">
+        <div class="atDbFilters" id="filterList">
+            <!-- Show filters in an auto-submitting form, when clicked go to ?filter=[FILTER] -->
+            <!-- 
+            <form action="/athenaeum/" method="get">
+                <input type="text" name="filter" placeholder="Filter..." value="">
+                <button type="submit">Filter</button>
+            </form>
+            -->
+        </div>
+
+        <div class="atDbForm" id="dbForm">
+            <div class="form" id="newRecord">
+                <div class="field title">
+                    <input class="recordText" type="text" placeholder="Title...">
+                </div>
+                <div class="field category">
+                    <input class="recordText" type="text" placeholder="Category/Methods...">
+                </div>
+                <div class="field tag">
+                    <input class="recordText" type="text" placeholder="Tags...">
+                </div>
+                <div class="field link">
+                    <input class="recordText" type="text" placeholder="Link...">
+                </div>
+                <div class="fieldControls">
+                    <button class="triggerSave" id="triggerSave" onclick="saveRecord()"><img src="/public/icons/save.png" height="35px"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="atDbRecords" id="dbRecords">
+            <!-- FOR EACH RECORD...
+            <div class="record" oncontextmenu="window.open('https://vault.nwtb.io/...')">
+                <div class="field title">
+                    <span><p class="recordTitle hideWhileEditing">Title</p></span>
+                    <input class="recordText hideWhileViewing" type="text" placeholder="Title...">
+                </div>
+                <div class="field category">
+                    <span class="recordCategories">
+                        <p class="recordCategoryItem hideWhileEditing">Category1</p>
+                        <p class="recordCategoryItem hideWhileEditing">Category2</p>
+                    </span>
+                    <input class="recordText hideWhileViewing" type="text" placeholder="Category/Methods..."> [Multi-select-like styling]
+                <div class="field tag">
+                    <input class="recordText hideWhileViewing" type="text" placeholder="Tags..."> [Multi-select-like styling]
+                </div>
+                <div class="fieldControls">
+                    <button class="triggerSave hideWhileViewing" id="triggerSave" onclick="save([RECORD_ID])"><img src="/public/icons/save.png" height="35px"></button>
+                    <button class="triggerEdit hideWhileEditing" id="triggerEdit" onclick="edit([RECORD_ID])"><img src="/public/icons/pencil.png" height="35px"></button>
+                    <button class="triggerDelete" id="triggerDelete" onclick="delete([RECORD_ID])"><img src="/public/icons/trashcan.png" height="35px"></button>
+                </div>
+            </div>
+            -->
+            <!-- [...] -->
+        </div>
+    </div>
+
+    {% include "../_includes/layouts/modern/parts/footer.njk" %}
+</div>
+
+<script>
+    // When the page loads, fetch the database records
+    async function getAthenaea () {
+        // Get the user ID from localStorage (nwtbUUID)
+        const nwtbUUID = localStorage.getItem('nwtbUUID');
+        console.log("nwtbUUID: ", nwtbUUID);
+
+        // Get the athenaeumLink element
+        const athenaeumLink = document.getElementById('athenaeumLink');
+
+        // Get the current url
+        const url = window.location.href;
+        console.log("url: ", url);
+        
+        // Get the Athenaeum ID from the url (in format: https://nwtb.io/athenaeum/[ATHENAEUM ID])
+        const athenaeumID = url.split('/').pop();
+
+        // If one is not present, athenaeumID = null
+        if (athenaeumID === 'athenaeum') {
+            athenaeumID = null;
+        }
+        console.log("athenaeumID: ", athenaeumID);
+        
+        // Fetch the Athenaeum records
+        const response = await fetch("/.netlify/functions/athenaeum-getdata", {
+            method: 'POST',
+            body: JSON.stringify({
+                nwtbUUID: nwtbUUID,
+                athenaeumID: athenaeumID
+            })
+        })
+
+        if (response.status === 403) {
+            alert('You do not have permission to view this Athenaeum.');
+        }
+
+        if (response.ok) {
+            // Get the response body
+            const data = await response.json();
+            const loading = document.getElementById('loading');
+            const page = document.getElementById('page');
+            console.log("data: ", data);
+
+            // Set the title of the athenaeum
+            document.getElementById('atTitle').textContent = data.atTitle;
+            // Set the ID of the athenaeum
+            document.getElementById('atID').textContent = data.atID;
+
+            // Append athenaeumID to the dbRecords class list
+            document.getElementById('dbRecords').classList.add(data.atID);
+
+            // Clear the form fields
+            document.getElementById('newRecord').querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+
+            // For each record in the response body, create a new record element
+            data.athenaeumData.forEach(record => {
+                const recordElement = document.createElement('div');
+                recordElement.classList.add('record');
+                recordElement.oncontextmenu = () => {
+                    window.open(`${record.recordLinkToData}`);
+                }
+                // Set the id to the recordID
+                recordElement.id = record.recordID;
+                // Create element for the record title
+                const title = document.createElement('div');
+                title.classList.add('field');
+                title.classList.add('title');
+                title.innerHTML = `
+                    <span><p class="recordTitle hideWhileEditing">${record.recordTitle}</p></span>
+                    <input class="recordText hideWhileViewing" type="text" value="${record.recordTitle}">
+                `;
+                recordElement.appendChild(title);
+                // Create element for the record categories
+                const categories = document.createElement('div');
+                categories.classList.add('field');
+                categories.classList.add('category');
+                // Iterate through JSON for each category (in the array record.recordCategory)
+                record.recordCategory.forEach(category => {
+                    const categoryItem = document.createElement('p');
+                    categoryItem.classList.add('recordCategoryItem');
+                    categoryItem.classList.add('hideWhileEditing');
+                    categoryItem.textContent = category;
+                    categories.appendChild(categoryItem);
+                });
+                // Create input for categories
+                const categoryInput = document.createElement('input');
+                categoryInput.classList.add('recordText');
+                categoryInput.classList.add('hideWhileViewing');
+                categoryInput.type = 'text';
+                categoryInput.value = record.recordCategory.join(', ');
+                categories.appendChild(categoryInput);
+                recordElement.appendChild(categories);
+
+                // Create element for the record tags
+                const tags = document.createElement('div');
+                tags.classList.add('field');
+                tags.classList.add('tag');
+                // Iterate through JSON for each tag (in the array record.recordTags)
+                record.recordTags.forEach(tag => {
+                    const tagItem = document.createElement('p');
+                    tagItem.classList.add('recordTagItem');
+                    tagItem.classList.add('hideWhileEditing');
+                    tagItem.textContent = tag;
+                    tags.appendChild(tagItem);
+                });
+                // Create input for tags
+                const tagInput = document.createElement('input');
+                tagInput.classList.add('recordText');
+                tagInput.classList.add('hideWhileViewing');
+                tagInput.type = 'text';
+                tagInput.value = record.recordTags.join(', ');
+                tags.appendChild(tagInput);
+                recordElement.appendChild(tags);
+
+                // Create element for the record controls
+                const controls = document.createElement('div');
+                controls.classList.add('fieldControls');
+                
+                // Create the controls
+                const save = document.createElement('button');
+                save.classList.add('triggerSave');
+                save.classList.add('hideWhileViewing');
+                save.id = 'triggerSave';
+                save.onclick = () => {
+                    saveRecord(record.recordID);
+                }
+                save.innerHTML = `<img src="/public/icons/save.png" height="35px">`;
+                controls.appendChild(save);
+
+                const edit = document.createElement('button');
+                edit.classList.add('triggerEdit');
+                edit.classList.add('hideWhileEditing');
+                edit.id = 'triggerEdit';
+                edit.onclick = () => {
+                    editRecord(record.recordID);
+                }
+                edit.innerHTML = `<img src="/public/icons/pencil.png" height="35px">`;
+                controls.appendChild(edit);
+
+                const del = document.createElement('button');
+                del.classList.add('triggerDelete');
+                del.id = 'triggerDelete';
+                del.onclick = () => {
+                    deleteRecord(record.recordID);
+                }
+                del.innerHTML = `<img src="/public/icons/trashcan.png" height="35px">`;
+                controls.appendChild(del);
+
+                recordElement.appendChild(controls);
+
+                // Append the record to the dbRecords element
+                document.getElementById('dbRecords').appendChild(recordElement);
+            });
+            // Hide loading, Show the page
+            loading.style.display = 'none';
+            page.style.display = 'flex';
+        }
+    }
+    getAthenaea();
+
+    async function saveRecord (recordID) {
+        var id = recordID;
+        var record;
+        var link;
+        if (id) {
+            record = document.getElementById(recordID);
+        } else {
+            record = document.getElementById('newRecord');
+            id = null
+            link = record.querySelector('.link input').value;
+        }
+        const title = record.querySelector('.title input').value;
+        const categories = record.querySelector('.category input').value.split(', ');
+        const tags = record.querySelector('.tag input').value.split(', ');
+        
+        const response = await fetch("/.netlify/functions/athenaeum-save", {
+            method: 'POST',
+            body: JSON.stringify({
+                athenaeumID: document.getElementById('dbRecords').classList[1],
+                recordID: id,
+                recordTitle: title,
+                recordCategory: categories,
+                recordTags: tags,
+                recordLinkToData: link
+            })
+        });
+        // Clear the dbRecords element
+        document.getElementById('dbRecords').innerHTML = '';
+        // Fetch the records again
+        getAthenaea();
+    }
+
+    async function editRecord (recordID) {
+        const record = document.getElementById(recordID);
+        record.querySelectorAll('.hideWhileEditing').forEach(element => {
+            element.style.display = 'none';
+        });
+        record.querySelectorAll('.hideWhileViewing').forEach(element => {
+            element.style.display = 'flex';
+        });
+    }
+
+    async function deleteRecord (recordID) {
+        // Prompt the user to confirm deletion
+        if (!confirm("Are you sure you want to delete this record?")) {
+            return;
+        }
+        // Fetch the delete function
+        const response = await fetch("/.netlify/functions/athenaeum-delete", {
+            method: 'POST',
+            body: JSON.stringify({
+                recordID: recordID,
+                athenaeumID: document.getElementById('dbRecords').classList[1]
+            })
+        });
+        if (response.ok) {
+            console.log("Record deleted successfully.");
+            // Delete the element from the DOM
+            document.getElementById(recordID).remove();
+        }
+    }
+
+</script>

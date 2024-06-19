@@ -1,0 +1,35 @@
+{
+  "name": "nwtb",
+  "version": "14.05",
+  "description": "The gateway to the digital world.",
+  "scripts": {
+    "build-default": "eleventy"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "2.0.1",
+    "@11ty/eleventy-navigation": "0.3.5",
+    "firebase": "10.1.0",
+    "firebase-admin": "11.10.1",
+    "firebase-functions": "4.4.1",
+    "node-fetch": "3.3.2",
+    "eleventy-plugin-seo": "0.5.2",
+    "markdown-it": "13.0.1",
+    "markdown-it-attrs": "4.1.6",
+    "jsonwebtoken": "9.0.2",
+    "auth0-spa-js": "1.6.5"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "repository": {
+    "url": "https://github.com/n8dw/axis"
+  },
+  "glitch": {
+    "projectType": "generated_static"
+  },
+  "keywords": [
+    "node",
+    "glitch",
+    "express"
+  ]
+}

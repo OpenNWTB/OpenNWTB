@@ -1,0 +1,7 @@
+.glitchdotcom.json
+build
+node_modules
+web_modules
+.DS_Store
+src/.DS_Store
+

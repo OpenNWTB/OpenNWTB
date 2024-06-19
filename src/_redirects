@@ -1,0 +1,19 @@
+# Redirects
+# Edit these to suit your needs. These are referenced throughout the site.
+# Format: /old-url /new-url 301
+# HELP CENTRE
+/help/ https://help.example.com 301
+
+# TERMS
+/terms/ https://example.com/terms 301
+
+# PRIVACY POLICY
+/privacy/ https://example.com/privacy 301
+
+
+# That's all, happy nwtb-ing!
+# These are required for nwtb to operate correctly. Do not modify or remove them.
+/c/* /c/ 200!
+/athenaeum/:id /athenaeum/ 200
+/bookmark/:id /bookmark/ 200
+/exchange/:id /exchange/ 200
